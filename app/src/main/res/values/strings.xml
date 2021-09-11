@@ -4,5 +4,8 @@
     <string name="note_hint">Note</string>
     <string name="confirm">Create</string>
     <string name="cancel">Cancel</string>
+    <string name="required_input">required</string>
+    <string name="pls_wait_for_a_moment">Please wait for a moment..</string>
+    <string name="note_create_success">%1$s is successfully created!</string>
 
 </resources>

@@ -5,7 +5,8 @@
       <map>
         <entry key="app/src/main/res/drawable/ic_add_24.xml" value="0.20564102564102565" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.19270833333333334" />
-        <entry key="app/src/main/res/layout/fragment_item_create_modify.xml" value="0.19270833333333334" />
+        <entry key="app/src/main/res/layout/dialog_progress_loading.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_item_create_modify.xml" value="0.22" />
         <entry key="app/src/main/res/layout/fragment_todo_list.xml" value="0.25" />
       </map>
     </option>
