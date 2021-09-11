@@ -66,6 +66,8 @@ class ItemCreateModifyFragment : Fragment() {
             }
         }
 
+        binding.btnCancelEntry.setOnClickListener { findNavController().popBackStack() }
+
     }
 
     private fun areAllTextFieldsNotEmpty(): Boolean {
