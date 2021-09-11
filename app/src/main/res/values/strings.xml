@@ -9,5 +9,6 @@
     <string name="note_create_success">%1$s is successfully created!</string>
     <string name="update">Update</string>
     <string name="delete">Delete</string>
+    <string name="deny">Deny</string>
 
 </resources>

@@ -52,7 +52,7 @@ class NoteRepo {
                 .data.let {
                     NetworkCallResult.Success(
                         Note(
-                            id = it?.get("id")?.toString().orEmpty(),
+                            id = noteId,
                             title = it?.get("title")?.toString().orEmpty(),
                             note = it?.get("note")?.toString().orEmpty()
                         )
@@ -70,6 +70,21 @@ class NoteRepo {
                 .delete()
                 .await()
             NetworkCallResult.Success("Successfully Deleted!")
+        } catch (e: Exception) {
+            NetworkCallResult.Error(e)
+        }
+    }
+
+    // update note
+    suspend fun updateNoteFromFireStore(
+        noteId: String,
+        note: HashMap<String, Any>
+    ): NetworkCallResult<String> {
+        return try {
+            db.collection("notes").document(noteId)
+                .set(note)
+                .await()
+            NetworkCallResult.Success("Successfully Updated!")
         } catch (e: Exception) {
             NetworkCallResult.Error(e)
         }

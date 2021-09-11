@@ -77,4 +77,26 @@ class CreateModifyViewModel : ViewModel() {
         }
     }
 
+    private val _updateProgressLive = MutableLiveData<ViewState<String>>()
+    val updateProgressLive: LiveData<ViewState<String>>
+        get() = _updateProgressLive
+
+    var previousNote: Note? = null
+
+    fun updateNote(noteId: String, modifiedNote: HashMap<String, Any>) {
+        _updateProgressLive.value = ViewState.Loading
+        viewModelScope.launch {
+            noteRepo.updateNoteFromFireStore(noteId, modifiedNote).let {
+                when (it) {
+                    is NetworkCallResult.Success -> {
+                        _updateProgressLive.value = ViewState.Success(it.data)
+                    }
+                    is NetworkCallResult.Error -> {
+                        _updateProgressLive.value = ViewState.Error(it.exception)
+                    }
+                }
+            }
+        }
+    }
+
 }

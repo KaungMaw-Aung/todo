@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.kaungmaw.todo.R
 import com.kaungmaw.todo.databinding.FragmentItemCreateModifyBinding
+import com.kaungmaw.todo.domain.Note
 import com.kaungmaw.todo.extensions.setNavResult
 import com.kaungmaw.todo.home.FROM_ITEM_CREATED
 import com.kaungmaw.todo.util.LoadingDialog
@@ -35,8 +36,8 @@ class ItemCreateModifyFragment : Fragment() {
         navArgs.noteId?.let {
             binding.btnSubmitEntry.isVisible = false
             binding.btnCancelEntry.isVisible = false
-            binding.tieTitle.isFocusable = false
-            binding.tieNote.isFocusable = false
+            binding.tieTitle.isEnabled = false
+            binding.tieNote.isEnabled = false
 
             viewModel.getNote(it)
         }
@@ -87,6 +88,12 @@ class ItemCreateModifyFragment : Fragment() {
                     binding.pbLoadingCircle.isVisible = false
                     binding.tieTitle.setText(it.data.title)
                     binding.tieNote.setText(it.data.note)
+
+                    viewModel.previousNote = Note(
+                        id = it.data.id,
+                        title = it.data.title,
+                        note = it.data.note
+                    )
                 }
                 is ViewState.Error -> {
                     binding.gpContainer.isVisible = true
@@ -117,11 +124,68 @@ class ItemCreateModifyFragment : Fragment() {
             }
         }
 
+        viewModel.updateProgressLive.observe(viewLifecycleOwner) {
+            when (it) {
+                is ViewState.Loading -> {
+                    LoadingDialog.show(requireContext())
+                }
+                is ViewState.Success -> {
+                    LoadingDialog.dismiss()
+                    Toast.makeText(requireContext(), it.data, Toast.LENGTH_LONG).show()
+
+                    findNavController().apply {
+                        setNavResult(FROM_ITEM_CREATED, true)
+                        popBackStack()
+                    }
+                }
+                is ViewState.Error -> {
+                    LoadingDialog.dismiss()
+                    Toast.makeText(requireContext(), it.error.message, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+
         binding.btnCancelEntry.setOnClickListener { findNavController().popBackStack() }
+
+        binding.btnCancelUpdate.setOnClickListener {
+            binding.tieTitle.isEnabled = false
+            binding.tieNote.isEnabled = false
+
+            binding.btnSubmitUpdate.isVisible = false
+            binding.btnCancelUpdate.isVisible = false
+
+            binding.tieTitle.setText(viewModel.previousNote!!.title)
+            binding.tieNote.setText(viewModel.previousNote!!.note)
+        }
+
+        binding.btnSubmitUpdate.setOnClickListener {
+
+            val updatedNote = Note(
+                id = navArgs.noteId!!,
+                title = binding.tieTitle.text.toString(),
+                note = binding.tieNote.text.toString()
+            )
+
+            if (areTwoNotesNotTheSame(twoNotes = viewModel.previousNote!! to updatedNote)) {
+                viewModel.updateNote(
+                    navArgs.noteId!!,
+                    hashMapOf(
+                        "title" to binding.tieTitle.text.toString(),
+                        "note" to binding.tieNote.text.toString()
+                    )
+                )
+            } else {
+                Toast.makeText(requireContext(), "Should not be the same value!", Toast.LENGTH_LONG)
+                    .show()
+            }
+        }
 
         setHasOptionsMenu(navArgs.noteId != null)
 
     }
+
+    private fun areTwoNotesNotTheSame(twoNotes: Pair<Note, Note>) =
+        twoNotes.first != twoNotes.second
 
     private fun areAllTextFieldsNotEmpty(): Boolean {
 
@@ -147,7 +211,13 @@ class ItemCreateModifyFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_update -> Toast.makeText(requireContext(), "Update Action", Toast.LENGTH_LONG).show()
+            R.id.action_update -> {
+                binding.btnCancelUpdate.isVisible = true
+                binding.btnSubmitUpdate.isVisible = true
+
+                binding.tieTitle.isEnabled = true
+                binding.tieNote.isEnabled = true
+            }
             R.id.action_delete -> viewModel.deleteNote(navArgs.noteId!!)
         }
         return true
