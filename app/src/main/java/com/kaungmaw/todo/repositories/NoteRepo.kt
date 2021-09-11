@@ -2,6 +2,7 @@ package com.kaungmaw.todo.repositories
 
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.kaungmaw.todo.domain.Note
 import com.kaungmaw.todo.util.NetworkCallResult
 import kotlinx.coroutines.tasks.await
 
@@ -19,6 +20,24 @@ class NoteRepo {
                 .get()
                 .await()
                 .get("title").toString().let { NetworkCallResult.Success(it) }
+        } catch (e: Exception) {
+            NetworkCallResult.Error(e)
+        }
+    }
+
+    // get notes
+    suspend fun getNotesFromFireStore(): NetworkCallResult<List<Note>> {
+        return try {
+            db.collection("notes")
+                .get()
+                .await()
+                .documents.map {
+                    Note(
+                        id = it.id,
+                        title = it["title"].toString(),
+                        note = it["note"].toString()
+                    )
+                }.let { NetworkCallResult.Success(it) }
         } catch (e: Exception) {
             NetworkCallResult.Error(e)
         }
