@@ -9,5 +9,14 @@
         android:id="@+id/todoListFragment"
         android:name="com.kaungmaw.todo.home.TodoListFragment"
         android:label="fragment_todo_list"
-        tools:layout="@layout/fragment_todo_list" />
+        tools:layout="@layout/fragment_todo_list" >
+        <action
+            android:id="@+id/action_todoListFragment_to_itemCreateModifyFragment"
+            app:destination="@id/itemCreateModifyFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/itemCreateModifyFragment"
+        android:name="com.kaungmaw.todo.createmodify.ItemCreateModifyFragment"
+        android:label="fragment_item_create_modify"
+        tools:layout="@layout/fragment_item_create_modify" />
 </navigation>

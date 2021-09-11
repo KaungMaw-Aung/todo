@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.kaungmaw.todo.R
 import com.kaungmaw.todo.databinding.FragmentTodoListBinding
 
 class TodoListFragment : Fragment() {
@@ -24,7 +26,7 @@ class TodoListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.fabAddNewTodo.setOnClickListener {
-            Toast.makeText(requireContext(), "fab clicked!", Toast.LENGTH_LONG).show()
+            findNavController().navigate(R.id.itemCreateModifyFragment)
         }
     }
 
