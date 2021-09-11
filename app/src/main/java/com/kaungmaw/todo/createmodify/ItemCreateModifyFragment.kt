@@ -3,6 +3,7 @@ package com.kaungmaw.todo.createmodify
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -30,6 +31,15 @@ class ItemCreateModifyFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        navArgs.noteId?.let {
+            binding.btnSubmitEntry.isVisible = false
+            binding.btnCancelEntry.isVisible = false
+            binding.tieTitle.isFocusable = false
+            binding.tieNote.isFocusable = false
+
+            viewModel.getNote(it)
+        }
 
         binding.btnSubmitEntry.setOnClickListener {
             if (areAllTextFieldsNotEmpty()) {
@@ -61,6 +71,26 @@ class ItemCreateModifyFragment : Fragment() {
                 }
                 is ViewState.Error -> {
                     LoadingDialog.dismiss()
+                    Toast.makeText(requireContext(), it.error.message, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+
+        viewModel.noteLive.observe(viewLifecycleOwner) {
+            when (it) {
+                is ViewState.Loading -> {
+                    binding.gpContainer.isVisible = false
+                    binding.pbLoadingCircle.isVisible = true
+                }
+                is ViewState.Success -> {
+                    binding.gpContainer.isVisible = true
+                    binding.pbLoadingCircle.isVisible = false
+                    binding.tieTitle.setText(it.data.title)
+                    binding.tieNote.setText(it.data.note)
+                }
+                is ViewState.Error -> {
+                    binding.gpContainer.isVisible = true
+                    binding.pbLoadingCircle.isVisible = false
                     Toast.makeText(requireContext(), it.error.message, Toast.LENGTH_LONG).show()
                 }
             }

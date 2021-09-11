@@ -43,4 +43,24 @@ class NoteRepo {
         }
     }
 
+    // get single note
+    suspend fun getNoteFromFireStore(noteId: String): NetworkCallResult<Note> {
+        return try {
+            db.collection("notes").document(noteId)
+                .get()
+                .await()
+                .data.let {
+                    NetworkCallResult.Success(
+                        Note(
+                            id = it?.get("id")?.toString().orEmpty(),
+                            title = it?.get("title")?.toString().orEmpty(),
+                            note = it?.get("note")?.toString().orEmpty()
+                        )
+                    )
+                }
+        } catch (e: Exception) {
+            NetworkCallResult.Error(e)
+        }
+    }
+
 }
