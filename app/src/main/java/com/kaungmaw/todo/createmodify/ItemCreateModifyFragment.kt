@@ -97,7 +97,9 @@ class ItemCreateModifyFragment : Fragment() {
                     viewModel.previousNote = Note(
                         id = it.data.id,
                         title = it.data.title,
-                        note = it.data.note
+                        note = it.data.note,
+                        createdAt = it.data.createdAt
+
                     )
                 }
                 is ViewState.Error -> {
@@ -168,7 +170,8 @@ class ItemCreateModifyFragment : Fragment() {
             val updatedNote = Note(
                 id = navArgs.noteId!!,
                 title = binding.tieTitle.text.toString(),
-                note = binding.tieNote.text.toString()
+                note = binding.tieNote.text.toString(),
+                createdAt = viewModel.previousNote!!.createdAt
             )
 
             if (areTwoNotesNotTheSame(twoNotes = viewModel.previousNote!! to updatedNote)) {
@@ -176,7 +179,8 @@ class ItemCreateModifyFragment : Fragment() {
                     navArgs.noteId!!,
                     hashMapOf(
                         "title" to binding.tieTitle.text.toString(),
-                        "note" to binding.tieNote.text.toString()
+                        "note" to binding.tieNote.text.toString(),
+                        "created_at" to viewModel.previousNote!!.createdAt
                     )
                 )
             } else {

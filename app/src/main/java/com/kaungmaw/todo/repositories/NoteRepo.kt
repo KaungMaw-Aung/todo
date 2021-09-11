@@ -1,5 +1,6 @@
 package com.kaungmaw.todo.repositories
 
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.kaungmaw.todo.domain.Note
@@ -36,7 +37,8 @@ class NoteRepo {
                     Note(
                         id = it.id,
                         title = it["title"].toString(),
-                        note = it["note"].toString()
+                        note = it["note"].toString(),
+                        createdAt = it["created_at"] as Timestamp
                     )
                 }.let { NetworkCallResult.Success(it) }
         } catch (e: Exception) {
@@ -55,7 +57,8 @@ class NoteRepo {
                         Note(
                             id = noteId,
                             title = it?.get("title")?.toString().orEmpty(),
-                            note = it?.get("note")?.toString().orEmpty()
+                            note = it?.get("note")?.toString().orEmpty(),
+                            createdAt = it?.get("created_at") as Timestamp
                         )
                     )
                 }
