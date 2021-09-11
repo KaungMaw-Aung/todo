@@ -1,9 +1,7 @@
 package com.kaungmaw.todo.createmodify
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -68,6 +66,8 @@ class ItemCreateModifyFragment : Fragment() {
 
         binding.btnCancelEntry.setOnClickListener { findNavController().popBackStack() }
 
+        setHasOptionsMenu(true)
+
     }
 
     private fun areAllTextFieldsNotEmpty(): Boolean {
@@ -85,6 +85,19 @@ class ItemCreateModifyFragment : Fragment() {
         }
 
         return (binding.tieTitle.text!!.isNotBlank() && binding.tieNote.text!!.isNotBlank())
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.modify_action_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_update -> Toast.makeText(requireContext(), "Update Action", Toast.LENGTH_LONG).show()
+            R.id.action_delete -> Toast.makeText(requireContext(), "Delete Action", Toast.LENGTH_LONG).show()
+        }
+        return true
     }
 
 }

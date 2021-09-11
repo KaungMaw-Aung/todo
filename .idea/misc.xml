@@ -9,6 +9,8 @@
         <entry key="app/src/main/res/layout/fragment_item_create_modify.xml" value="0.22" />
         <entry key="app/src/main/res/layout/fragment_todo_list.xml" value="0.22" />
         <entry key="app/src/main/res/layout/item_recycler_note.xml" value="0.25" />
+        <entry key="app/src/main/res/menu/modify_action_menu.xml" value="0.18" />
+        <entry key="app/src/main/res/menu/modify_menu.xml" value="0.19270833333333334" />
       </map>
     </option>
   </component>
