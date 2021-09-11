@@ -29,6 +29,7 @@ class NoteRepo {
     suspend fun getNotesFromFireStore(): NetworkCallResult<List<Note>> {
         return try {
             db.collection("notes")
+                .orderBy("created_at")
                 .get()
                 .await()
                 .documents.map {

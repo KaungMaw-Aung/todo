@@ -8,6 +8,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.kaungmaw.todo.R
 import com.kaungmaw.todo.databinding.FragmentItemCreateModifyBinding
 import com.kaungmaw.todo.domain.Note
@@ -15,6 +18,7 @@ import com.kaungmaw.todo.extensions.setNavResult
 import com.kaungmaw.todo.home.FROM_ITEM_CREATED
 import com.kaungmaw.todo.util.LoadingDialog
 import com.kaungmaw.todo.util.ViewState
+import java.util.*
 
 class ItemCreateModifyFragment : Fragment() {
 
@@ -47,7 +51,8 @@ class ItemCreateModifyFragment : Fragment() {
                 viewModel.addNewNote(
                     note = hashMapOf(
                         "title" to binding.tieTitle.text.toString(),
-                        "note" to binding.tieNote.text.toString()
+                        "note" to binding.tieNote.text.toString(),
+                        "created_at" to Timestamp.now()
                     )
                 )
             }
