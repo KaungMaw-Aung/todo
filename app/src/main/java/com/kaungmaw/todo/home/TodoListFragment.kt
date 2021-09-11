@@ -9,12 +9,8 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.kaungmaw.todo.R
 import com.kaungmaw.todo.databinding.FragmentTodoListBinding
-import com.kaungmaw.todo.extensions.clearResult
 import com.kaungmaw.todo.extensions.getNavResult
-import com.kaungmaw.todo.extensions.setNavResult
-import com.kaungmaw.todo.util.LoadingDialog
 import com.kaungmaw.todo.util.ViewState
 
 const val ITEM_CREATED = "ITEM_CREATED"
@@ -38,11 +34,17 @@ class TodoListFragment : Fragment() {
         findNavController().getNavResult<Boolean>(ITEM_CREATED)?.observe(viewLifecycleOwner) {
             if (it) {
                 viewModel.getNotes()
-                findNavController().currentBackStackEntry?.savedStateHandle?.set(ITEM_CREATED, false)
+                findNavController().currentBackStackEntry?.savedStateHandle?.set(
+                    ITEM_CREATED,
+                    false
+                )
             }
         }
 
-        val adapter = TodoListAdapter()
+        val adapter = TodoListAdapter { id ->
+            findNavController().navigate(TodoListFragmentDirections.toNoteCreateModify(id))
+        }
+
         binding.rvNotes.adapter = adapter
 
         viewModel.notesLive.observe(viewLifecycleOwner) {
@@ -68,7 +70,9 @@ class TodoListFragment : Fragment() {
 
 
         binding.fabAddNewTodo.setOnClickListener {
-            findNavController().navigate(R.id.itemCreateModifyFragment)
+            findNavController().navigate(
+                TodoListFragmentDirections.toNoteCreateModify(null)
+            )
         }
     }
 

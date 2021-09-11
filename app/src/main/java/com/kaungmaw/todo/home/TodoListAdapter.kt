@@ -8,7 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kaungmaw.todo.databinding.ItemRecyclerNoteBinding
 import com.kaungmaw.todo.domain.Note
 
-class TodoListAdapter() : ListAdapter<Note, NoteViewHolder>(NoteDiffUtil) {
+class TodoListAdapter(private val noteClick: (String) -> Unit) :
+    ListAdapter<Note, NoteViewHolder>(NoteDiffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
         return NoteViewHolder(
@@ -16,7 +17,8 @@ class TodoListAdapter() : ListAdapter<Note, NoteViewHolder>(NoteDiffUtil) {
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            )
+            ),
+            noteClick
         )
     }
 
@@ -36,11 +38,16 @@ object NoteDiffUtil : DiffUtil.ItemCallback<Note>() {
     }
 }
 
-class NoteViewHolder(private val binding: ItemRecyclerNoteBinding) : RecyclerView.ViewHolder(binding.root) {
+class NoteViewHolder(
+    private val binding: ItemRecyclerNoteBinding,
+    private val noteClick: (String) -> Unit
+) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(data: Note) {
         binding.tvItemTitle.text = data.title
         binding.tvItemNote.text = data.note
+
+        binding.root.setOnClickListener { noteClick(data.id) }
     }
 
 }

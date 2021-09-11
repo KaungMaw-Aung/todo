@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.kaungmaw.todo.R
 import com.kaungmaw.todo.databinding.FragmentItemCreateModifyBinding
 import com.kaungmaw.todo.extensions.setNavResult
@@ -17,6 +18,7 @@ class ItemCreateModifyFragment : Fragment() {
 
     private lateinit var binding: FragmentItemCreateModifyBinding
     private val viewModel by viewModels<CreateModifyViewModel>()
+    private val navArgs by navArgs<ItemCreateModifyFragmentArgs>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -66,7 +68,7 @@ class ItemCreateModifyFragment : Fragment() {
 
         binding.btnCancelEntry.setOnClickListener { findNavController().popBackStack() }
 
-        setHasOptionsMenu(true)
+        setHasOptionsMenu(navArgs.noteId != null)
 
     }
 
