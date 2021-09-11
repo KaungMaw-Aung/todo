@@ -11,8 +11,13 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.kaungmaw.todo.R
 import com.kaungmaw.todo.databinding.FragmentTodoListBinding
+import com.kaungmaw.todo.extensions.clearResult
+import com.kaungmaw.todo.extensions.getNavResult
+import com.kaungmaw.todo.extensions.setNavResult
 import com.kaungmaw.todo.util.LoadingDialog
 import com.kaungmaw.todo.util.ViewState
+
+const val ITEM_CREATED = "ITEM_CREATED"
 
 class TodoListFragment : Fragment() {
 
@@ -30,20 +35,28 @@ class TodoListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        findNavController().getNavResult<Boolean>(ITEM_CREATED)?.observe(viewLifecycleOwner) {
+            if (it) {
+                viewModel.getNotes()
+                findNavController().currentBackStackEntry?.savedStateHandle?.set(ITEM_CREATED, false)
+            }
+        }
+
+        val adapter = TodoListAdapter()
+        binding.rvNotes.adapter = adapter
+
         viewModel.notesLive.observe(viewLifecycleOwner) {
             when (it) {
                 is ViewState.Loading -> {
                     binding.pbLoadingCircle.isVisible = true
+                    binding.rvNotes.isVisible = false
                     binding.fabAddNewTodo.hide()
                 }
                 is ViewState.Success -> {
                     binding.pbLoadingCircle.isVisible = false
+                    binding.rvNotes.isVisible = true
                     binding.fabAddNewTodo.show()
-                    Toast.makeText(
-                        requireContext(),
-                        it.data.size.toString(),
-                        Toast.LENGTH_LONG
-                    ).show()
+                    adapter.submitList(it.data)
                 }
                 is ViewState.Error -> {
                     binding.pbLoadingCircle.isVisible = false

@@ -10,6 +10,8 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.kaungmaw.todo.R
 import com.kaungmaw.todo.databinding.FragmentItemCreateModifyBinding
+import com.kaungmaw.todo.extensions.setNavResult
+import com.kaungmaw.todo.home.ITEM_CREATED
 import com.kaungmaw.todo.util.LoadingDialog
 import com.kaungmaw.todo.util.ViewState
 
@@ -52,7 +54,10 @@ class ItemCreateModifyFragment : Fragment() {
                         getString(R.string.note_create_success, it.data),
                         Toast.LENGTH_LONG
                     ).show()
-                    findNavController().popBackStack()
+                    findNavController().apply {
+                        setNavResult(ITEM_CREATED, true)
+                        popBackStack()
+                    }
                 }
                 is ViewState.Error -> {
                     LoadingDialog.dismiss()

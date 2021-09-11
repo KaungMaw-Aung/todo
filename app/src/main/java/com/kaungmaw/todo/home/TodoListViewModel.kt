@@ -37,4 +37,5 @@ class TodoListViewModel: ViewModel() {
     init {
         getNotes()
     }
+
 }
