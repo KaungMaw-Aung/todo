@@ -13,7 +13,7 @@ import com.kaungmaw.todo.databinding.FragmentTodoListBinding
 import com.kaungmaw.todo.extensions.getNavResult
 import com.kaungmaw.todo.util.ViewState
 
-const val ITEM_CREATED = "ITEM_CREATED"
+const val FROM_ITEM_CREATED = "ITEM_CREATED"
 
 class TodoListFragment : Fragment() {
 
@@ -31,11 +31,11 @@ class TodoListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        findNavController().getNavResult<Boolean>(ITEM_CREATED)?.observe(viewLifecycleOwner) {
+        findNavController().getNavResult<Boolean>(FROM_ITEM_CREATED)?.observe(viewLifecycleOwner) {
             if (it) {
                 viewModel.getNotes()
                 findNavController().currentBackStackEntry?.savedStateHandle?.set(
-                    ITEM_CREATED,
+                    FROM_ITEM_CREATED,
                     false
                 )
             }

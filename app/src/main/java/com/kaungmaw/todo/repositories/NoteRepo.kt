@@ -63,4 +63,16 @@ class NoteRepo {
         }
     }
 
+    // delete note
+    suspend fun deleteNoteFromFireStore(noteId: String): NetworkCallResult<String> {
+        return try {
+            db.collection("notes").document(noteId)
+                .delete()
+                .await()
+            NetworkCallResult.Success("Successfully Deleted!")
+        } catch (e: Exception) {
+            NetworkCallResult.Error(e)
+        }
+    }
+
 }

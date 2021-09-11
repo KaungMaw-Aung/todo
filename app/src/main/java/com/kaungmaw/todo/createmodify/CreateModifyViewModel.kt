@@ -57,4 +57,24 @@ class CreateModifyViewModel : ViewModel() {
         }
     }
 
+    private val _deleteProgressLive = MutableLiveData<ViewState<String>>()
+    val deleteProgressLive: LiveData<ViewState<String>>
+        get() = _deleteProgressLive
+
+    fun deleteNote(noteId: String) {
+        _deleteProgressLive.value = ViewState.Loading
+        viewModelScope.launch {
+            noteRepo.deleteNoteFromFireStore(noteId).let {
+                when (it) {
+                    is NetworkCallResult.Success -> {
+                        _deleteProgressLive.value = ViewState.Success(it.data)
+                    }
+                    is NetworkCallResult.Error -> {
+                        _deleteProgressLive.value = ViewState.Error(it.exception)
+                    }
+                }
+            }
+        }
+    }
+
 }

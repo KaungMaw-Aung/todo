@@ -11,7 +11,7 @@ import androidx.navigation.fragment.navArgs
 import com.kaungmaw.todo.R
 import com.kaungmaw.todo.databinding.FragmentItemCreateModifyBinding
 import com.kaungmaw.todo.extensions.setNavResult
-import com.kaungmaw.todo.home.ITEM_CREATED
+import com.kaungmaw.todo.home.FROM_ITEM_CREATED
 import com.kaungmaw.todo.util.LoadingDialog
 import com.kaungmaw.todo.util.ViewState
 
@@ -65,7 +65,7 @@ class ItemCreateModifyFragment : Fragment() {
                         Toast.LENGTH_LONG
                     ).show()
                     findNavController().apply {
-                        setNavResult(ITEM_CREATED, true)
+                        setNavResult(FROM_ITEM_CREATED, true)
                         popBackStack()
                     }
                 }
@@ -91,6 +91,27 @@ class ItemCreateModifyFragment : Fragment() {
                 is ViewState.Error -> {
                     binding.gpContainer.isVisible = true
                     binding.pbLoadingCircle.isVisible = false
+                    Toast.makeText(requireContext(), it.error.message, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+
+        viewModel.deleteProgressLive.observe(viewLifecycleOwner) {
+            when (it) {
+                is ViewState.Loading -> {
+                    LoadingDialog.show(requireContext())
+                }
+                is ViewState.Success -> {
+                    LoadingDialog.dismiss()
+                    Toast.makeText(requireContext(), it.data, Toast.LENGTH_LONG).show()
+
+                    findNavController().apply {
+                        setNavResult(FROM_ITEM_CREATED, true)
+                        popBackStack()
+                    }
+                }
+                is ViewState.Error -> {
+                    LoadingDialog.dismiss()
                     Toast.makeText(requireContext(), it.error.message, Toast.LENGTH_LONG).show()
                 }
             }
@@ -127,7 +148,7 @@ class ItemCreateModifyFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_update -> Toast.makeText(requireContext(), "Update Action", Toast.LENGTH_LONG).show()
-            R.id.action_delete -> Toast.makeText(requireContext(), "Delete Action", Toast.LENGTH_LONG).show()
+            R.id.action_delete -> viewModel.deleteNote(navArgs.noteId!!)
         }
         return true
     }
